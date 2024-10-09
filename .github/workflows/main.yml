@@ -1,28 +1,36 @@
-jobs:
-  run-selenium-ide-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      
-      - name: Install Selenium IDE runner
-        run: npm install -g selenium-side-runner
+name: Run Selenium IDE Tests
 
-      # Install Chrome dependencies
-      - name: Install Chrome dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          
-      - name: Run Selenium IDE tests
-        # Use Xvfb to run Chrome in headless mode
-        run: xvfb-run selenium-side-runner -c "browserName=chrome goog:chromeOptions.args=[headless,no-sandbox,disable-dev-shm-usage]" ./test1_orlin_qa_interview.side
+on:
+  push:
+    branches:
+      - main  # Adjust this if you're working on a different branch
+  pull_request:
+    branches:
+      - main  # Adjust this if necessary
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install Selenium-side-runner
+      run: |
+        npm install -g selenium-side-runner
+        selenium-side-runner --version
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Selenium IDE Tests
+      run: |
+        selenium-side-runner ./test1_orlin_qa_interview.side
+      env:
+        DISPLAY: ':99.0'
