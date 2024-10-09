@@ -1,36 +1,39 @@
 name: Run Selenium IDE Tests
 
+# Trigger the workflow on every push or pull request to the main branch
 on:
+  pull_request:
   push:
     branches:
-      - main  # Adjust this if you're working on a different branch
-  pull_request:
-    branches:
-      - main  # Adjust this if necessary
+      - main
 
 jobs:
-  test:
+  run-selenium-tests:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      # Step 1: Check out the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      # Step 2: Set up Node.js environment to use selenium-side-runner
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify Node.js version
 
-    - name: Install Selenium-side-runner
-      run: |
-        npm install -g selenium-side-runner
-        selenium-side-runner --version
+      # Step 3: Install Selenium IDE Runner to execute .side files
+      - name: Install Selenium IDE Runner
+        run: npm install -g selenium-side-runner
 
-    - name: Install dependencies
-      run: npm install
+      # Step 4: Run the Selenium IDE .side file
+      # Adjust the path to your .side file based on its location in your repo
+      - name: Run Selenium IDE Tests
+        run: selenium-side-runner your-file.side --output-directory=./results
 
-    - name: Run Selenium IDE Tests
-      run: |
-        selenium-side-runner ./test1_orlin_qa_interview.side
-      env:
-        DISPLAY: ':99.0'
+      # Step 5: Upload the test results (optional)
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-results
+          path: ./results
