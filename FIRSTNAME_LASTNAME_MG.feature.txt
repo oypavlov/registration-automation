@@ -1,0 +1,56 @@
+Feature: User Registration
+
+  As a new moneygaming.com player,
+  I want to register with my full details,
+  So that I can play online casino games.
+
+  Background: 
+    Given I am on the registration page
+
+  Scenario: Password is valid (6 characters, 1 number, 1 special character)
+    When I fill in the registration form with
+      | field        | value                   |
+      | username     | testuser               |
+      | password     | P@ssw0rd               |
+    And I submit the form
+    Then I should see a confirmation message "Registration successful"
+
+  Scenario: Password is too short
+    When I fill in the registration form with
+      | field        | value                   |
+      | username     | testuser               |
+      | password     | Pass1                  |
+    And I submit the form
+    Then I should see an error message "Password must be at least 6 characters long"
+
+  Scenario: Password lacks a number
+    When I fill in the registration form with
+      | field        | value                   |
+      | username     | testuser               |
+      | password     | Password!              |
+    And I submit the form
+    Then I should see an error message "Password must contain at least one number"
+
+  Scenario: Password lacks a special character
+    When I fill in the registration form with
+      | field        | value                   |
+      | username     | testuser               |
+      | password     | Passw0rd               |
+    And I submit the form
+    Then I should see an error message "Password must contain at least one special character"
+
+  Scenario: Password contains only letters
+    When I fill in the registration form with
+      | field        | value                   |
+      | username     | testuser               |
+      | password     | Password               |
+    And I submit the form
+    Then I should see an error message "Password must contain at least one number and one special character"
+
+  Scenario: Password meets all criteria
+    When I fill in the registration form with
+      | field        | value                   |
+      | username     | testuser               |
+      | password     | Valid123!              |
+    And I submit the form
+    Then I should see a confirmation message "Registration successful"
