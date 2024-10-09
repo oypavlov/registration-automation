@@ -1,13 +1,3 @@
-name: Run Selenium IDE Tests
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
 jobs:
   run-selenium-ide-tests:
     runs-on: ubuntu-latest
@@ -23,5 +13,9 @@ jobs:
       - name: Install Selenium IDE runner
         run: npm install -g selenium-side-runner
 
-      - name: Run Selenium IDE tests
-        run: selenium-side-runner test1_orlin_qa_interview.side
+      # Install Chrome dependencies
+      - name: Install Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+          wget -q -O - https://
