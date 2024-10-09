@@ -1,0 +1,27 @@
+name: Run Selenium IDE Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-selenium-ide-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      - name: Install Selenium IDE runner
+        run: npm install -g selenium-side-runner
+
+      - name: Run Selenium IDE tests
+        run: selenium-side-runner test1_orlin_qa_interview.side
